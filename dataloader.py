@@ -79,7 +79,7 @@ class EGFRBboxDataset(Dataset):
         
         # Diagnostics: number of samples with valid PFS annotations
         n_pfs = (self.df_filtered['pfs_time'] > 0).sum()
-        print(f"  - Samples with PFS: {n_pfs} 人")
+        print(f"  - Samples with PFS: {n_pfs} ")
 
         # --- Transforms ---
         self.spatial_aug = transforms.Compose([

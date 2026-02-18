@@ -3,7 +3,6 @@ from typing import Union
 from transformers import LlamaConfig, LlamaModel, LlamaForCausalLM
 from transformers.modeling_outputs import CausalLMOutputWithPast
 from transformers.generation.utils import GenerateOutput
-from .configuration_d3d_lamed import LamedConfig
 from abc import ABC, abstractmethod
 from torch import Tensor
 import math

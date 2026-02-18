@@ -72,7 +72,7 @@ def main():
         print("\n--- [3/4] Loading Trainer... ---")
         
     #  accelerator
-    trainer = EGFRTrainer(model, dataloaders, cfg, accelerator)
+    trainer = EGFRTrainer(model, dataloaders, cfg, accelerator, num_of_clusters=cfg.NUM_OF_CLUSTRERS)
     
     # --- 5. Start Training ---
     if accelerator.is_main_process:

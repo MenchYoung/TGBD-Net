@@ -12,6 +12,7 @@ import torch.distributed as dist
 from lifelines.utils import concordance_index
 from scipy.optimize import linear_sum_assignment
 import sys
+from dataloader import get_kmeans_dataloaders
 
 def cox_loss(risk_score, times, events):
     """
@@ -97,7 +98,6 @@ class EGFRTrainer:
     
     
     def perform_kmeans_initialization(self):
-        from DataSet.DataSet_FULL import get_kmeans_dataloaders
         
         clean_loader = get_kmeans_dataloaders(
             csv_path=self.config.CSV_PATH,   

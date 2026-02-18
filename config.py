@@ -2,16 +2,16 @@ import torch
 
 class Config:
     # --- 1. Directories ---
-    CSV_PATH = r"/path/to/yoyr/dataset.csv" # 务必修改这里
+    CSV_PATH = r"/path/to/your/dataset.csv" 
     CONFIG_JSON_PATH = r"/path/to/your/config.json"
-    WEIGHTS_PATH = r"/path/to/your/vision_tower_weights_0810.pt"
+    WEIGHTS_PATH = r"/path/to/your/vision_tower_weights.pt"
     SAVE_DIR = "./experiment/TGBD_Net"
 
     # --- 2. Training Strategy ---
     EPOCHS = 135
     SEED = 42
     EARLY_STOP_PATIENCE = 50
-    NUM_OF_CLUSRERS = 4
+    NUM_OF_CLUSTRERS = 4
     NUM_CLASSES = 2
     DROPOUT_RATE = 0.3
     
