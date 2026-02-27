@@ -81,7 +81,7 @@ class EGFRTrainer:
         # Optimizer
         self.optimizer = optim.AdamW(self.model.parameters(), lr=config.LR, weight_decay=1e-5)
         self.scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(
-            self.optimizer, T_max=(config.EPOCHS - config.WARMUP_EPOCHS)*2,eta_min=1e-6
+            self.optimizer, T_max=(config.EPOCHS - config.WARMUP_EPOCHS),eta_min=1e-6
         )
         print(f"DEBUG: Scheduler T_max = {self.scheduler.T_max}")
 
@@ -659,4 +659,5 @@ class EGFRTrainer:
 
         self.accelerator.wait_for_everyone()
         if self.accelerator.is_main_process:
+
             print(fr"\n🎉 Training Completed! Check {self.config.SAVE_DIR} for best_val_preds.csv and best_test_preds.csv")
