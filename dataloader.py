@@ -71,14 +71,14 @@ class EGFRBboxDataset(Dataset):
         self.df_filtered = df_mode_subset
         
         # Column names
-        self.global_path_col = 'whole_lung_path'
-        self.local_path_col = 'tumor_crop_path'
+        self.global_path_col = 'xxxxxx'
+        self.local_path_col = 'xxxxxx'
         
         print(f"--- [{self.mode.upper()}] Hybrid Dataset ---")
         print(f"  - Total samples: {len(self.df_filtered)}")
         
         # Diagnostics: number of samples with valid PFS annotations
-        n_pfs = (self.df_filtered['pfs_time'] > 0).sum()
+        n_pfs = (self.df_filtered['xxxxxx'] > 0).sum()
         print(f"  - Samples with PFS: {n_pfs} ")
 
         # --- Transforms ---
@@ -87,8 +87,8 @@ class EGFRBboxDataset(Dataset):
         ])
         
         self.post_process = transforms.Compose([
-            transforms.Resized(keys=["image_global", "image_local"], spatial_size=self.image_size, mode="trilinear", allow_missing_keys=True),
-            transforms.ScaleIntensityRanged(keys=["image_global", "image_local"], a_min=-1200.0, a_max=400.0, b_min=0.0, b_max=1.0, clip=True, allow_missing_keys=True),
+            transforms.Resized(keys=["xxxxxx", "xxxxxx"], spatial_size=self.image_size, mode="trilinear", allow_missing_keys=True),
+            transforms.ScaleIntensityRanged(keys=["xxxxxx", "xxxxxx"], a_min=-1200.0, a_max=400.0, b_min=0.0, b_max=1.0, clip=True, allow_missing_keys=True),
         ])
         
         if self.mode == 'train':
@@ -122,7 +122,7 @@ class EGFRBboxDataset(Dataset):
                 global_path = str(row[self.global_path_col])
                 image_global = self.loader(global_path)
                 
-                has_bbox_flag = int(row['has_bbox'])
+                has_bbox_flag = int(row['xxxxxx'])
                 local_path = str(row[self.local_path_col])
                 
                 if has_bbox_flag == 1 and not pd.isna(local_path) and os.path.exists(local_path):
@@ -137,8 +137,8 @@ class EGFRBboxDataset(Dataset):
                     data_dict = self.spatial_aug(data_dict)
                 transformed_data = self.post_process(data_dict)
                 
-                img_g = transformed_data['image_global']
-                img_l = transformed_data['image_local']
+                img_g = transformed_data['xxxxx']
+                img_l = transformed_data['xxxxx']
 
 
                 # Replicate to 3 channels if single-channel
@@ -147,14 +147,14 @@ class EGFRBboxDataset(Dataset):
                 
                 # --- 3. Read PFS labels ---
                 # if absent, set to -1
-                pfs_time = float(row.get('pfs_time', -1.0))
-                pfs_event = float(row.get('pfs_event', -1.0))
+                pfs_time = float(row.get('xxxxxx', -1.0))
+                pfs_event = float(row.get('xxxxxx', -1.0))
                 
                 if pd.isna(pfs_time): pfs_time = -1.0
                 if pd.isna(pfs_event): pfs_event = -1.0
                 
                 # read egfr labels
-                label_egfr = int(row['egfr_label'])
+                label_egfr = int(row['xxxxxx'])
 
                 return {
                     "image_global": img_g,
@@ -163,14 +163,14 @@ class EGFRBboxDataset(Dataset):
                     "pfs_time": torch.tensor(pfs_time, dtype=torch.float),   
                     "pfs_event": torch.tensor(pfs_event, dtype=torch.float), 
                     "has_bbox": torch.tensor(has_bbox_flag, dtype=torch.long),
-                    "id": str(row.get('id', idx))
+                    "id": str(row.get('xxxxxx', idx))
                 }
             
             
             except (FileNotFoundError, OSError, RuntimeError, Exception) as e:
                 wait_time = (attempt + 1) * 0.2
                 if attempt % 2 == 0:
-                    print(f"⚠️ [Data Error] ID:{row.get('id', idx)} | Try {attempt+1}/{MAX_RETRIES} Error: {e}")
+                    print(f"⚠️ [Data Error] ID:{row.get('xxxxxx', idx)} | Try {attempt+1}/{MAX_RETRIES} Error: {e}")
                 
                 time.sleep(wait_time)
                 
@@ -190,13 +190,13 @@ class EGFRBboxDataset(Dataset):
 # ============================================================
 def bbox_collate_fn(batch):
     return {
-        'image_global': torch.stack([item['image_global'] for item in batch]),
-        'image_local': torch.stack([item['image_local'] for item in batch]),
-        'label_egfr': torch.stack([item['label_egfr'] for item in batch]),
-        'pfs_time': torch.stack([item['pfs_time'] for item in batch]),   
-        'pfs_event': torch.stack([item['pfs_event'] for item in batch]), 
-        'has_bbox': torch.stack([item['has_bbox'] for item in batch]),
-        'id': [item['id'] for item in batch]
+        'image_global': torch.stack([item['xxxxxx'] for item in batch]),
+        'image_local': torch.stack([item['xxxxxx'] for item in batch]),
+        'label_egfr': torch.stack([item['xxxxxx'] for item in batch]),
+        'pfs_time': torch.stack([item['xxxxxx'] for item in batch]),   
+        'pfs_event': torch.stack([item['xxxxxx'] for item in batch]), 
+        'has_bbox': torch.stack([item['xxxxxx'] for item in batch]),
+        'id': [item['xxxxxx'] for item in batch]
     }
 
 # ============================================================
@@ -220,9 +220,9 @@ def get_bbox_dataloaders(csv_path, image_size, batch_size=4, num_workers=4):
             train_df = full_df[full_df['split'] == 'train'].reset_index(drop=True)
             
             # 2. Define weights
-            #    - samples with PFS (pfs_time > 0): higher weight (more likely to be sampled)
+            #    - samples with PFS: higher weight (more likely to be sampled)
             #    - samples without PFS: lower weight
-            has_pfs = (train_df['pfs_time'] > 0).astype(float)
+            has_pfs = (train_df['xxxxxx'] > 0).astype(float)
             has_pfs_mask = (train_df['pfs_time'] > 0)
             n_pfs = has_pfs_mask.sum()
             n_egfr_only = len(train_df) - n_pfs
@@ -276,4 +276,5 @@ def get_kmeans_dataloaders(csv_path, image_size, batch_size=4, num_workers=4):
         pin_memory=True
     )
     
+
     return loader 
