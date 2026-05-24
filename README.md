@@ -1,5 +1,5 @@
 # TGBD-Net
-This repository contains the official implementation of the paper: “TGBD-Net: Tumor-Guided Bridging Distillation for Joint EGFR Mutation and Survival Prediction in Lung Cancer from CT Imaging” (Submitted to MICCAI 2026)
+This repository contains the official implementation of the paper: “TGBD-Net: Tumor-Guided Bridging Distillation for Joint EGFR Mutation and Survival Prediction in Lung Cancer from CT Imaging” (Early accepted by MICCAI 2026)
 
 ## 🚀Introduction
 
